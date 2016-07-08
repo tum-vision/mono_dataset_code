@@ -8,8 +8,9 @@ sudo apt-get install libeigen3-dev
 
 1. install ziplib:
 sudo apt-get install zlib1g-dev
-unzip thirdparty/libzip-1.1.1
-cd thirdparty/libzip-1.1.1
+cd thirdparty
+tar -zxvf libzip-1.1.1.tar.gz
+cd libzip-1.1.1/
 ./configure
 make
 sudo make install
