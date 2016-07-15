@@ -2,8 +2,8 @@
 
 # Install
 
-#### 1. Install Eigen:
-    sudo apt-get install libeigen3-dev
+#### 1. Install Eigen & OpenCV (if you don't have it):
+    sudo apt-get install libeigen3-dev libopencv-dev
 
 #### 2. install ziplib:
     sudo apt-get install zlib1g-dev
@@ -16,7 +16,7 @@
     sudo cp lib/zipconf.h /usr/local/include/zipconf.h   # (no idea why that is needed).
 
 
-#### 3. install aruco marker detection:
+#### 3. install aruco marker detection (optional - only required for vignette calibration):
 see eg here: 
 
     http://maztories.blogspot.de/2013/07/installing-aruco-augmented-reality.html 

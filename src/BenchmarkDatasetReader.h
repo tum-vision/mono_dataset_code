@@ -9,7 +9,6 @@
 #include "PhotometricUndistorter.h"
 
 #include "zip.h"
-#include <boost/thread.hpp>
 
 
 inline int getdir (std::string dir, std::vector<std::string> &files)
