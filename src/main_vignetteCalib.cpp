@@ -86,7 +86,7 @@ int imageSkip=1;
 
 
 int maxIterations=20;
-int outlierTh = 10;
+int outlierTh = 15;
 
 // grid width for template image.
 int gw = 1000;
@@ -95,6 +95,9 @@ int gh = 1000;
 // width of grid relative to marker (fac times marker size)
 float facw = 5;
 float fach = 5;
+
+// remove pixel with absolute gradient larger than this from the optimization.
+int maxAbsGrad = 255;
 
 void parseArgument(char* arg)
 {
@@ -191,6 +194,8 @@ int main( int argc, char** argv )
 		meanExposure+=reader->getExposure(i);
 	meanExposure = meanExposure/reader->getNumImages();
 
+	if(meanExposure==0) meanExposure = 1;
+
 
 	for(int i=0;i<reader->getNumImages();i+=imageSkip)
 	{
@@ -248,11 +253,23 @@ int main( int argc, char** argv )
 
 		reader->getUndistorter()->distortCoordinates(plane2imgX, plane2imgY, gw*gh);
 
+		if(imgRaw->exposure_time == 0) imgRaw->exposure_time = 1;
 
 		float* image = new float[wI*hI];
 		for(int y=0; y<hI;y++)
 			for(int x=0; x<wI;x++)
 				image[x+y*wI] = meanExposure*imgRaw->image[x+y*wI] / imgRaw->exposure_time;
+
+		for(int y=2; y<hI-2;y++)
+			for(int x=2; x<wI-2;x++)
+			{
+				for(int deltax=-2; deltax<3;deltax++)
+					for(int deltay=-2; deltay<3;deltay++)
+					{
+						if(fabsf(image[x+y*wI] - image[x+deltax+(y+deltay)*wI]) > maxAbsGrad) { image[x+y*wI] = NAN; image[x+deltax+(y+deltay)*wI]=NAN; }
+					}
+			}
+
 		images.push_back(image);
 
 
@@ -371,6 +388,7 @@ int main( int argc, char** argv )
 				float fac = getInterpolatedElement(vignetteFactor, plane2imgX[pi], plane2imgY[pi], wI);
 
 				if(isnanf(fac)) continue;
+				if(isnanf(color)) continue;
 
 				double residual = (double)((color - planeColor[pi]*fac)*(color - planeColor[pi]*fac));
 				if(abs(residual) > oth2)
@@ -427,6 +445,7 @@ int main( int argc, char** argv )
 				float colorPlane = planeColor[pi];
 
 				if(isnanf(colorPlane)) continue;
+				if(isnanf(colorImage)) continue;
 
 				double residual = (double)((colorImage - colorPlane*fac)*(colorImage - colorPlane*fac));
 				if(abs(residual) > oth2)
