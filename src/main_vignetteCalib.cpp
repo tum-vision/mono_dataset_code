@@ -209,8 +209,8 @@ int main( int argc, char** argv )
 		MDetector.detect(InImage,Markers);
 		if(Markers.size() != 1) continue;
 
-		cv::vector<cv::Point2f> ptsP;
-		cv::vector<cv::Point2f> ptsI;
+		vector<cv::Point2f> ptsP;
+		vector<cv::Point2f> ptsI;
 		ptsI.push_back(cv::Point2f(Markers[0][0].x, Markers[0][0].y));
 		ptsI.push_back(cv::Point2f(Markers[0][1].x, Markers[0][1].y));
 		ptsI.push_back(cv::Point2f(Markers[0][2].x, Markers[0][2].y));
@@ -300,7 +300,7 @@ int main( int argc, char** argv )
 			{
 				int idxS = (x<gw ? x : gw-1)+(y<gh ? y : gh-1)*gw;
 				int idxT = ((x+10)<gw ? (x+10) : gw-1)+(y<gh ? y : gh-1)*gw;
-		
+
 				int u_dS = plane2imgX[idxS]+0.5;
 				int v_dS = plane2imgY[idxS]+0.5;
 
