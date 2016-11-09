@@ -75,6 +75,6 @@ Implements Sim(3) alignment of a tracked trajectory to the ground-truth segments
 
 
 
-#### 5. License
+#  License
 The code provided in this repository is licensed under the BSD license.
 
