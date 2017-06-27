@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>photometric_dataset_calibration</name>
+  <version>0.1.0</version>
+  <description>
+    Code for Monocular Visual Odometry Dataset - https://vision.cs.tum.edu/data/datasets/mono-dataset
+  </description>
+  <maintainer email="demmeln@in.tum.de">Nikolaus Demmel</maintainer>
+  <author email="engelj-@in-dot-tum-dot.de">Jakob Engel</author>
+  <license>BSD</license>
+  <url>https://github.com/tum-vision/mono_dataset_code</url>
+  <url>https://vision.in.tum.de/data/datasets/mono-dataset</url>
+  <buildtool_depend>cmake</buildtool_depend>
+  <depend>eigen</depend>
+  <depend>libopencv-dev</depend>
+  <depend>zlib</depend>
+  <depend>aruco</depend>
+  <!-- todo: define rosdep keys for libzip -->
+</package>
+
+
