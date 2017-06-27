@@ -40,6 +40,7 @@ SET(CMAKE_MODULE_PATH ${CMAKE_INSTALL_PREFIX}/lib/cmake/ )
 find_package(aruco)
 
 IF(aruco_FOUND)
+	include_directories(${aruco_INCLUDE_DIRS})
 	add_executable(vignetteCalib src/main_vignetteCalib.cpp src/FOVUndistorter.cpp src/PhotometricUndistorter.cpp)
 	target_link_libraries(vignetteCalib ${OpenCV_LIBS} ${aruco_LIBS} ${LIBZIP_LIBRARY})
 ELSE()
