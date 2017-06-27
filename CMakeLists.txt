@@ -31,6 +31,9 @@ target_link_libraries(responseCalib ${OpenCV_LIBS} ${LIBZIP_LIBRARY})
 add_executable(playDataset src/main_playbackDataset.cpp src/FOVUndistorter.cpp src/PhotometricUndistorter.cpp)
 target_link_libraries(playDataset ${OpenCV_LIBS} ${LIBZIP_LIBRARY})
 
+install(TARGETS responseCalib playDataset
+    RUNTIME DESTINATION bin)
+
 
 
 
@@ -43,6 +46,8 @@ IF(aruco_FOUND)
 	include_directories(${aruco_INCLUDE_DIRS})
 	add_executable(vignetteCalib src/main_vignetteCalib.cpp src/FOVUndistorter.cpp src/PhotometricUndistorter.cpp)
 	target_link_libraries(vignetteCalib ${OpenCV_LIBS} ${aruco_LIBS} ${LIBZIP_LIBRARY})
+	install(TARGETS vignetteCalib
+	    RUNTIME DESTINATION bin)
 ELSE()
 	message("================ aruco not found. not compiling vignetteCalib. ========================")
 ENDIF()
