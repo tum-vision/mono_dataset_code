@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>photometric_dataset_calibration</name>
+  <name>photometric_calibration</name>
   <version>0.1.0</version>
   <description>
     Code for Monocular Visual Odometry Dataset - https://vision.cs.tum.edu/data/datasets/mono-dataset
@@ -15,6 +15,9 @@
   <depend>libopencv-dev</depend>
   <depend>zlib</depend>
   <depend>aruco</depend>
+  <export>
+    <build_type>cmake</build_type>
+  </export>
   <!-- todo: define rosdep keys for libzip -->
 </package>
 
