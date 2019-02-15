@@ -69,7 +69,7 @@ EIGEN_ALWAYS_INLINE float getInterpolatedElement(const float* const mat, const f
 	return res;
 }
 
-void displayImage(float* I, int w, int h, std::string name)
+void displayImage(float* I, int w, int h, std::string name, std::string path)
 {
 	float vmin=1e10;
 	float vmax=-1e10;
@@ -90,7 +90,7 @@ void displayImage(float* I, int w, int h, std::string name)
 
 	printf("plane image values %f - %f!\n", vmin, vmax);
 	cv::imshow(name, img);
-	cv::imwrite("vignetteCalibResult/plane.png", img);
+	cv::imwrite(path + "/" +"vignetteCalibResult/plane.png", img);
 }
 void displayImageV(float* I, int w, int h, std::string name)
 {
@@ -187,9 +187,11 @@ int main( int argc, char** argv )
 {
 	for(int i=2; i<argc;i++)
 		parseArgument(argv[i]);
+		
+	std::string path = std::string(argv[1]);
 
-	if(-1 == system("rm -rf vignetteCalibResult")) printf("could not delete old vignetteCalibResult folder!\n");
-	if(-1 == system("mkdir vignetteCalibResult")) printf("could not delete old vignetteCalibResult folder!\n");
+	if(-1 == system(std::string("rm -rf " + path + "/vignetteCalibResult").c_str())) printf("could not delete old vignetteCalibResult folder!\n");
+	if(-1 == system(std::string("mkdir " + path + "/vignetteCalibResult").c_str())) printf("could not delete old vignetteCalibResult folder!\n");
 
 	// affine map from plane cordinates to grid coordinates.
 	Eigen::Matrix3f K_p2idx = Eigen::Matrix3f::Identity();
@@ -202,7 +204,8 @@ int main( int argc, char** argv )
 
 	// load images, rectify and estimate the camera pose wrt. the plane.
 	DatasetReader* reader = new DatasetReader(argv[1]);
-	printf("SEQUENCE NAME: %s!\n", argv[1]);
+
+	printf("SEQUENCE NAME: %s\n", argv[1]);
 
 	int w_out, h_out;
 	//Eigen::Matrix3f K = reader->getUndistorter()->getK_rect();
@@ -218,7 +221,6 @@ int main( int argc, char** argv )
 	int wI = reader->getUndistorter()->getInputDims()[0];
 	int hI = reader->getUndistorter()->getInputDims()[1];
 
-
 	float meanExposure = 0;
 	for(int i=0;i<reader->getNumImages();i+=imageSkip)
 		meanExposure+=reader->getExposure(i);
@@ -231,6 +233,7 @@ int main( int argc, char** argv )
 	{
         std::vector<aruco::Marker> Markers;
 		ExposureImage* img = reader->getImage(i,true, false, false, false);
+		std::cout << i << std::endl;
 
 		cv::Mat InImage;
 		cv::Mat(h_out, w_out, CV_32F, img->image).convertTo(InImage, CV_8U, 1, 0);
@@ -264,7 +267,6 @@ int main( int argc, char** argv )
 
 		ExposureImage* imgRaw = reader->getImage(i,false, true, false, false);
 
-
 		float* plane2imgX = new float[gw*gh];
 		float* plane2imgY = new float[gw*gh];
 
@@ -276,12 +278,18 @@ int main( int argc, char** argv )
 			for(int x=0;x<gw;x++)
 			{
 				Eigen::Vector3f pp = HK*Eigen::Vector3f(x,y,1);
-				plane2imgX[idx] = pp[0] / pp[2];
-				plane2imgY[idx] = pp[1] / pp[2];
+				// Rounding control
+				if (pp[2] > 0){
+					plane2imgX[idx] = pp[0] / pp[2];
+					plane2imgY[idx] = pp[1] / pp[2];
+				}else{
+					plane2imgX[idx] = NAN;
+					plane2imgY[idx] = NAN;
+				}
 				idx++;
 			}
 
-		reader->getUndistorter()->distortCoordinates(plane2imgX, plane2imgY, gw*gh);
+		reader->getUndistorter()->distortCoordinates(plane2imgX, plane2imgY, plane2imgX, plane2imgY, gw*gh);
 
 		if(imgRaw->exposure_time == 0) imgRaw->exposure_time = 1;
 
@@ -361,8 +369,8 @@ int main( int argc, char** argv )
 		if(rand()%40==0)
 		{
 			char buf[1000];
-			snprintf(buf,1000,"vignetteCalibResult/img%d.png",i);
-			cv::imwrite(buf, dbgImg);
+			snprintf(buf,1000, "vignetteCalibResult/img%d.png",i);
+			cv::imwrite(path + "/" + std::string(buf), dbgImg);
 		}
 
 		cv::waitKey(1);
@@ -370,10 +378,10 @@ int main( int argc, char** argv )
 		p2imgX.push_back(plane2imgX);
 		p2imgY.push_back(plane2imgY);
 	}
-
+	
 
 	std::ofstream logFile;
-	logFile.open("vignetteCalibResult/log.txt", std::ios::trunc | std::ios::out);
+	logFile.open(path + "/" + "vignetteCalibResult/log.txt", std::ios::trunc | std::ios::out);
 	logFile.precision(15);
 
 
@@ -445,7 +453,7 @@ int main( int argc, char** argv )
 			else
 				planeColor[pi] = planeColorFC[pi] / planeColorFF[pi];
 		}
-		displayImage(planeColor, gw, gh, "Plane");
+		displayImage(planeColor, gw, gh, "Plane", path);
 
 		printf("%f residual terms => %f\n", R, sqrtf(E/R));
 
@@ -570,7 +578,7 @@ int main( int argc, char** argv )
 				cv::Mat wrap = cv::Mat(hI, wI, CV_32F, vignetteFactorTT)*254.9*254.9;
 				cv::Mat wrap16;
 				wrap.convertTo(wrap16, CV_16U,1,0);
-				cv::imwrite("vignetteCalibResult/vignetteSmoothed.png", wrap16);
+				cv::imwrite(path + "/" + "vignetteCalibResult/vignetteSmoothed.png", wrap16);
 				cv::waitKey(50);
 			}
 			{
@@ -578,7 +586,7 @@ int main( int argc, char** argv )
 				cv::Mat wrap = cv::Mat(hI, wI, CV_32F, vignetteFactor)*254.9*254.9;
 				cv::Mat wrap16;
 				wrap.convertTo(wrap16, CV_16U,1,0);
-				cv::imwrite("vignetteCalibResult/vignette.png", wrap16);
+				cv::imwrite(path + "/" + "vignetteCalibResult/vignette.png", wrap16);
 				cv::waitKey(50);
 			}
 		}

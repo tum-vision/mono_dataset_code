@@ -180,6 +180,7 @@ int main( int argc, char** argv )
 	for(int i=2; i<argc;i++)
 		parseArgument(argv[i]);
 
+	std::string path = std::string(argv[1]);
 
 	// load exposure times & images.
 	// first parameter is dataset location.
@@ -259,18 +260,17 @@ int main( int argc, char** argv )
 	for(int k=0;k<w*h;k++) E[k] = E[k]/En[k];
 
 
-
-	if(-1 == system("rm -rf photoCalibResult")) printf("could not delete old photoCalibResult folder!\n");
-	if(-1 == system("mkdir photoCalibResult")) printf("could not create photoCalibResult folder!\n");
+	if(-1 == system(std::string("rm -rf " + path + "/photoCalibResult").c_str())) printf("could not delete old photoCalibResult folder!\n");
+	if(-1 == system(std::string("mkdir " + path + "/photoCalibResult").c_str())) printf("could not delete old photoCalibResult folder!\n");
 
 
 	std::ofstream logFile;
-	logFile.open("photoCalibResult/log.txt", std::ios::trunc | std::ios::out);
+	logFile.open(path + "/" + "photoCalibResult/log.txt", std::ios::trunc | std::ios::out);
 	logFile.precision(15);
 
 
 	printf("init RMSE = %f! \t", rmse(G, E, exposureVec, dataVec, w*h )[0]);
-	plotE(E,w,h, "photoCalibResult/E-0");
+	plotE(E,w,h, path + "/" + "photoCalibResult/E-0");
 	cv::waitKey(100);
 
 
@@ -307,7 +307,7 @@ int main( int argc, char** argv )
 			printf("optG RMSE = %f! \t", rmse(G, E, exposureVec, dataVec, w*h )[0]);
 
 			char buf[1000]; snprintf(buf, 1000, "photoCalibResult/G-%d.png", it+1);
-			plotG(G, buf);
+			plotG(G, path + "/" + buf);
 		}
 
 
@@ -342,7 +342,7 @@ int main( int argc, char** argv )
 			printf("OptE RMSE = %f!  \t", rmse(G, E, exposureVec, dataVec, w*h )[0]);
 
 			char buf[1000]; snprintf(buf, 1000, "photoCalibResult/E-%d", it+1);
-			plotE(E,w,h, buf);
+			plotE(E,w,h, path + "/" + std::string(buf));
 		}
 
 
@@ -365,7 +365,7 @@ int main( int argc, char** argv )
 	logFile.close();
 
 	std::ofstream lg;
-	lg.open("photoCalibResult/pcalib.txt", std::ios::trunc | std::ios::out);
+	lg.open(path + "/" + "photoCalibResult/pcalib.txt", std::ios::trunc | std::ios::out);
 	lg.precision(15);
 	for(int i=0;i<256;i++)
 		lg << G[i] << " ";
