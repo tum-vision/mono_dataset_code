@@ -1,8 +1,6 @@
-
+Update (AlbertoJaenal): the calibration accepts various camera model. The code was copied from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso) and reformed to fit.
 
 # Install
-
-Update (AlbertoJaenal): the calibration accepts various camera model. The code was copied from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso) and reformed to fit.
 
 #### 1. Install Eigen & OpenCV (if you don't have it):
     sudo apt-get install libeigen3-dev libopencv-dev
@@ -71,7 +69,7 @@ vignetteSmoothed.png is a slightly smoothed version, mainly to remove the black 
 **WARNING: requires a lot of Memory (16GB ram for 1000 input images)**! Can easily be changed at the cost of slightly slower runtime... you'll have to do that yourself though.
 
 
-##### Geometric Calibration File (from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso))
+##### Geometric Calibration File (from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso#geometric-calibration-file))
 
 
 ###### Calibration File for Pre-Rectified Images
