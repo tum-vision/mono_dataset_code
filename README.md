@@ -2,6 +2,8 @@
 
 # Install
 
+Update (AlbertoJaenal): the calibration accepts various camera model. The code was copied from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso) and reformed to fit.
+
 #### 1. Install Eigen & OpenCV (if you don't have it):
     sudo apt-get install libeigen3-dev libopencv-dev
 
@@ -68,6 +70,44 @@ outputs some intermediate results, and vignette.png (16-bit png) containing the 
 vignetteSmoothed.png is a slightly smoothed version, mainly to remove the black borders (pixels at the border are never observed). See code for details.
 **WARNING: requires a lot of Memory (16GB ram for 1000 input images)**! Can easily be changed at the cost of slightly slower runtime... you'll have to do that yourself though.
 
+
+##### Geometric Calibration File (from [https://github.com/JakobEngel/dso](https://github.com/JakobEngel/dso))
+
+
+###### Calibration File for Pre-Rectified Images
+
+    Pinhole fx fy cx cy 0
+    in_width in_height
+    "crop" / "full" / "none" / "fx fy cx cy 0"
+    out_width out_height
+
+###### Calibration File for FOV camera model:
+
+    FOV fx fy cx cy omega
+    in_width in_height
+    "crop" / "full" / "fx fy cx cy 0"
+    out_width out_height
+
+
+###### Calibration File for Radio-Tangential camera model
+
+    RadTan fx fy cx cy k1 k2 r1 r2
+    in_width in_height
+    "crop" / "full" / "fx fy cx cy 0"
+    out_width out_height
+
+
+###### Calibration File for Equidistant camera model
+
+    EquiDistant fx fy cx cy k1 k2 r1 r2
+    in_width in_height
+    "crop" / "full" / "fx fy cx cy 0"
+    out_width out_height
+
+
+(note: for backwards-compatibility, "Pinhole", "FOV" and "RadTan" can be omitted). See the respective
+`::distortCoordinates` implementation in  `Undistorter.cpp` for the exact corresponding projection function.
+Furthermore, it should be straight-forward to implement other camera models.
 
 
 # Usage: Matlab evaluation code
