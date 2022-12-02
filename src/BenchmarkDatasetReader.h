@@ -249,7 +249,7 @@ public:
 		if(!isZipped)
 		{
 			// CHANGE FOR ZIP FILE
-			return cv::imread(files[id],CV_LOAD_IMAGE_GRAYSCALE);
+			return cv::imread(files[id],cv::IMREAD_GRAYSCALE);
 		}
 		else
 		{
@@ -271,7 +271,7 @@ public:
 					exit(1);
 				}
 			}
-			return cv::imdecode(cv::Mat(readbytes,1,CV_8U, databuffer), CV_LOAD_IMAGE_GRAYSCALE);
+			return cv::imdecode(cv::Mat(readbytes,1,CV_8U, databuffer),cv::IMREAD_GRAYSCALE);
 		}
 	}
 
@@ -343,4 +343,3 @@ private:
 
 	float* internalTempBuffer;
 };
-
