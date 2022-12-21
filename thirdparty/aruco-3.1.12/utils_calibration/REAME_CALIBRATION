@@ -1,0 +1,32 @@
+Version 1.3.1 adds a new calibration method using aruco chessboards. 
+The functionality is implemented in the application utils/aruco_calibration
+
+How to:
+open the pdf utils/aruco_calibration_board_a4.pdf and print it
+use a measurer tape and determine the lenght of the squares (in meters if you want everything resulting in meters).
+
+
+
+LIVE CALIBRATION:
+
+To do live calibration with your camera: plug it, and type 
+aruco_calibration  live  aruco_calibration_board_a4.yml camera_result.yml -size <marker_size>
+
+
+It everything is fine you'll see your camera images and when markers are detected, youll see them printed.
+
+Press 'a' to add the visible pattern to the pool of images used for calibration
+Press 'c' to perform calibration
+Use 's' to start or stop the video capture
+
+
+CALIBRATION FROM VIDEO
+aruco_calibration  video.avi  aruco_calibration_board_a4.yml camera_result.yml -size <marker_size>
+
+
+
+
+
+
+
+

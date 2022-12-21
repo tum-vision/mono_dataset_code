@@ -1,0 +1,16 @@
+# pkg-config file for the library
+
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+
+Name: @PROJECT_NAME@
+Description: ARUCO Library for marker detection
+Version:  @PROJECT_VERSION@
+Requires: opencv >= 2.1.0
+Conflicts: 
+Libs: -L${libdir} -l@PROJECT_NAME@
+Cflags: -I${includedir}/@PROJECT_NAME@ -I${includedir}
+
+

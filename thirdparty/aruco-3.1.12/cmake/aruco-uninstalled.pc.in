@@ -1,0 +1,10 @@
+
+libdir=@CMAKE_CURRENT_BINARY_DIR@
+includedir=@CMAKE_CURRENT_SOURCE_DIR@/src
+
+Name: @PROJECT_NAME@
+Description: ArUco: a minimal library for Augmented Reality applications based on OpenCv, uninstalled Version.
+Version: @PROJECT_VERSION@
+Requires: opencv >= 2.1.0
+Libs: -L${libdir} -laruco
+Cflags: -I${includedir}
