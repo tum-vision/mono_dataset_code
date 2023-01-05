@@ -45,7 +45,23 @@ int leakPadding=2;
 int nits = 10;
 int skipFrames = 1;
 
-
+void swap(double* xp, double* yp)
+{
+    double temp = *xp;
+    *xp = *yp;
+    *yp = temp;
+}
+ 
+void bubbleSort(double arr[])
+{
+    int i, j;
+    for (i = 0; i < 255; i++)
+ 
+        // Last i elements are already in place
+        for (j = 0; j < 255 - i; j++)
+            if (arr[j] > arr[j + 1])
+                swap(&arr[j], &arr[j + 1]);
+}
 
 Eigen::Vector2d rmse(double* G, double* E, std::vector<double> &exposureVec, std::vector<unsigned char*> &dataVec,  int wh)
 {
@@ -345,9 +361,21 @@ int main( int argc, char** argv )
 			plotE(E,w,h, buf);
 		}
 
+		double max_G = 0;
+		for(int i = 0; i < 256; i++)
+		{
+		if(max_G < G[i])
+		{
+			max_G = G[i];
+		}
+		}
+        std::cout << " Max G = " << max_G << std::endl;
+
+		bubbleSort(G);
 
 		// rescale such that maximum response is 255 (fairly arbitrary choice).
-		double rescaleFactor=255.0 / G[255];
+		// double rescaleFactor=255.0 / G[255];
+		double rescaleFactor=255.0 / max_G;
 		for(int i=0;i<w*h;i++)
 		{
 			E[i] *= rescaleFactor;
