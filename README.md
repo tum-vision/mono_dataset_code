@@ -29,14 +29,14 @@ tested with version 1.3.0. which is included in /thirdparty.
 
 
 #### 5. Dataset Description:
-The dataset used is [TUM dataset](https://vision.in.tum.de/data/datasets/mono-dataset). For photometric calibration, it contains images.zip, pcalib.txt, times.txt and camera.txt files. 
-- camera.txt contains camera parameters (as per the camera model) normalized to the video frame dimensions.
-- pcalib.txt is the output of gamma calibration and contains inverse irradiance values [0, 255].
-- times.txt contains 3 columns: video_frame_number, video_frame_timestamp (absolute/relative time), exposure_values (1/f). For exposure_values TUM_dataset has used sensors but I used another workaround; I captured a static scene without camera motion through various discrete exposure values and 
-set the exposure values in the times.txt exposure_values column using python.
+The dataset used is [TUM dataset](https://vision.in.tum.de/data/datasets/mono-dataset). For photometric calibration, it contains `images.zip`, `pcalib.txt`, `times.txt` and `camera.txt` files. 
+- `camera.txt` contains camera parameters (as per the camera model) normalized to the video frame dimensions.
+- `pcalib.txt` is the output of gamma calibration and contains inverse irradiance values [0, 255].
+- `times.txt` contains 3 columns: `video_frame_number`, `video_frame_timestamp` (absolute/relative time), exposure_values (1/f). For `exposure_values` TUM_dataset has used sensors but one can use another workaround; capture a static scene without camera motion through various discrete exposure values and 
+set the exposure values in the `times.txt` `exposure_values` column (generated the files and tested in custom dataset).
 
-**NOTE:** Gamma calibration requires times.txt, camera.txt and images.zip and outputs pcalib.txt
-while Vignette calibration requires camera.txt, images.zip and pcalib.txt and outputs vignette.png
+**NOTE:** Gamma calibration requires `times.txt`, `camera.txt` and `images.zip` and outputs `pcalib.txt`
+while Vignette calibration requires `camera.txt`, `images.zip` and `pcalib.txt` and outputs `vignette.png`
 
 
 # Usage: C++ code
