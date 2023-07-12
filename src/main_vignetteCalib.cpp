@@ -40,11 +40,14 @@
 #include "BenchmarkDatasetReader.h"
 #include "Eigen/Core"
 #include "Eigen/LU"
+#include "opencv2/core/eigen.hpp"
 
 #include <sstream>
 #include <fstream>
 #include <dirent.h>
 #include <algorithm>
+#include<iostream>
+#include<string>
 
 
 // reads interpolated element from a uchar* array
@@ -187,7 +190,6 @@ int main( int argc, char** argv )
 {
 	for(int i=2; i<argc;i++)
 		parseArgument(argv[i]);
-
 	if(-1 == system("rm -rf vignetteCalibResult")) printf("could not delete old vignetteCalibResult folder!\n");
 	if(-1 == system("mkdir vignetteCalibResult")) printf("could not delete old vignetteCalibResult folder!\n");
 
@@ -205,11 +207,19 @@ int main( int argc, char** argv )
 	printf("SEQUENCE NAME: %s!\n", argv[1]);
 
 	int w_out, h_out;
-	//Eigen::Matrix3f K = reader->getUndistorter()->getK_rect();
 	w_out = reader->getUndistorter()->getOutputDims()[0];
 	h_out = reader->getUndistorter()->getOutputDims()[1];
 
 	aruco::MarkerDetector MDetector;
+	std::string path = argv[1];
+	UndistorterFOV* undistorter = new UndistorterFOV((path+"camera.txt").c_str());
+	// Eigen::Matrix3f Krect = undistorter->getK_rect();
+	// float Omega = undistorter->getOmega();
+
+	cv::Mat camMatrix;
+	cv::Mat_<float> distCoeff(4, 1);
+	cv::eigen2cv(undistorter->getK_rect(), camMatrix);
+	distCoeff<< undistorter->getOmega(), 0, 0, 0;
 
 	std::vector<float*> images;
 	std::vector<float*> p2imgX;
@@ -236,7 +246,7 @@ int main( int argc, char** argv )
 		cv::Mat(h_out, w_out, CV_32F, img->image).convertTo(InImage, CV_8U, 1, 0);
 		delete img;
 
-		MDetector.detect(InImage,Markers);
+		MDetector.detect(InImage,Markers, camMatrix, distCoeff);
 		if(Markers.size() != 1) continue;
 
         std::vector<cv::Point2f> ptsP;
@@ -321,7 +331,7 @@ int main( int argc, char** argv )
 				int v_dT = plane2imgY[idxT]+0.5;
 
 				if(u_dS>=0 && v_dS >=0 && u_dS<wI && v_dS<hI && u_dT>=0 && v_dT >=0 && u_dT<wI && v_dT<hI)
-					cv::line(dbgImg, cv::Point(u_dS, v_dS), cv::Point(u_dT, v_dT), cv::Scalar(0,0,255), 10, CV_AA);
+					cv::line(dbgImg, cv::Point(u_dS, v_dS), cv::Point(u_dT, v_dT), cv::Scalar(0,0,255), 10, cv::LINE_AA);
 			}
 
 
@@ -338,7 +348,7 @@ int main( int argc, char** argv )
 				int v_dT = plane2imgY[idxT]+0.5;
 
 				if(u_dS>=0 && v_dS >=0 && u_dS<wI && v_dS<hI && u_dT>=0 && v_dT >=0 && u_dT<wI && v_dT<hI)
-					cv::line(dbgImg, cv::Point(u_dS, v_dS), cv::Point(u_dT, v_dT), cv::Scalar(0,0,255), 10, CV_AA);
+					cv::line(dbgImg, cv::Point(u_dS, v_dS), cv::Point(u_dT, v_dT), cv::Scalar(0,0,255), 10, cv::LINE_AA);
 			}
 
 
